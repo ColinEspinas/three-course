@@ -10,6 +10,7 @@ import { usePresets } from './presets'
 
 import fragmentShader from './shaders/blob.frag'
 import vertexShader from './shaders/blob.vert'
+import { randomRange, randomRangeExcept } from '../utils'
 
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
@@ -134,6 +135,7 @@ const mat = new THREE.ShaderMaterial({
 })
 
 const shapeGroup = new THREE.Group()
+const backgroundGroup = new THREE.Group()
 const start = Date.now()
 
 let pane: Pane
@@ -169,6 +171,7 @@ const createWorld = () => {
   // ---
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
+  controls.maxDistance = 100
   // ---
   document.body.appendChild(renderer.domElement)
   // ---
@@ -192,6 +195,39 @@ const createPrimitive = () => {
     shape,
     point,
   }
+}
+
+const createBackgroundShapes = (amount: number) => {
+  const fog = new THREE.Fog(0x292733, 0, 220)
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+
+  for (let i = 0; i < amount; ++i) {
+    const randomGeometry = randomRange(0, 2)
+    const randomSize = randomRange(1, 4)
+    let geometry: any = new THREE.BoxGeometry(randomSize, randomSize, randomSize)
+    // sphere background
+    if (randomGeometry < 1) {
+      geometry = new THREE.SphereGeometry(randomSize, 32 * randomSize, 32 * randomSize)
+    }
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x464356,
+      fog: true,
+    })
+    const mesh = new THREE.Mesh(geometry, material)
+
+    const exceptPositions = Array(20)
+      .fill(0)
+      .map((_, index) => index - 10)
+
+    mesh.position.x = randomRangeExcept(-100, 100, exceptPositions)
+    mesh.position.y = randomRangeExcept(-100, 100, exceptPositions)
+    mesh.position.z = randomRangeExcept(-100, 100, exceptPositions)
+
+    mesh.rotation.y += 0.01
+    backgroundGroup.add(mesh)
+  }
+  scene.add(backgroundGroup, ambientLight)
+  scene.fog = fog
 }
 
 const createGUI = () => {
@@ -297,6 +333,11 @@ const animate = () => {
 
   rotate(options.rotation)
 
+  for (const backgroundShape of backgroundGroup.children) {
+    backgroundShape.rotation.x += (Math.random() - 0.5 * 2) * randomRange(0.001, 0.01)
+    backgroundShape.rotation.y += (Math.random() - 0.5 * 2) * randomRange(0.001, 0.01)
+  }
+
   pane.importPreset(options)
 
   requestAnimationFrame(animate)
@@ -306,4 +347,5 @@ const animate = () => {
 createWorld()
 createGUI()
 createPrimitive()
+createBackgroundShapes(200)
 animate()
