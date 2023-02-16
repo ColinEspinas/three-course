@@ -7,7 +7,7 @@ const usePresets = (current: any) => {
   let presets: { [name: string]: any } = getItem('presets')
   if (Object.keys(presets).length === 0) {
     presets = {
-      default: structuredClone(current),
+      default: structuredClone({ perlin: { ...current.perlin } }),
       volcano: {
         perlin: {
           redhell: false,
@@ -52,7 +52,7 @@ const usePresets = (current: any) => {
   }
 
   const createPreset = (name: string) => {
-    presets[name] = structuredClone({ perlin: current.perlin })
+    presets[name] = structuredClone({ perlin: { ...current.perlin } })
     setItem('presets', presets)
   }
 
