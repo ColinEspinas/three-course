@@ -7,9 +7,10 @@ const usePresets = (current: any) => {
   let presets: { [name: string]: any } = getItem('presets')
   if (Object.keys(presets).length === 0) {
     presets = {
-      default: JSON.parse(JSON.stringify({ perlin: { ...current.perlin } })),
+      default: structuredClone({ perlin: current.perlin }),
       volcano: {
         perlin: {
+          ...current.perlin,
           redhell: false,
           size: 0.7,
           waves: 0.6,
@@ -23,6 +24,7 @@ const usePresets = (current: any) => {
       },
       cloud: {
         perlin: {
+          ...current.perlin,
           redhell: true,
           size: 1.0,
           waves: 20.0,
@@ -36,6 +38,7 @@ const usePresets = (current: any) => {
       },
       tornasol: {
         perlin: {
+          ...current.perlin,
           redhell: true,
           size: 1.0,
           waves: 3.0,
@@ -52,7 +55,7 @@ const usePresets = (current: any) => {
   }
 
   const createPreset = (name: string) => {
-    presets[name] = JSON.parse(JSON.stringify({ perlin: { ...current.perlin } }))
+    presets[name] = structuredClone({ perlin: { ...current.perlin, _gsap: null } })
     setItem('presets', presets)
   }
 
