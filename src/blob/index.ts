@@ -237,11 +237,11 @@ const createGUI = () => {
   perlinGUI.addButton({ title: 'Random perlin options' }).on('click', () => {
     shapeMethods.perlinRandom()
   })
-  perlinGUI.addInput(options.perlin, 'speed', { min: 0.1, max: 1.0 })
-  perlinGUI.addInput(options.perlin, 'size', { min: 0.0, max: 3.0 })
-  perlinGUI.addInput(options.perlin, 'decay', { min: 0.0, max: 1.0 })
+  perlinGUI.addInput(options.perlin, 'speed', { min: 0.0, max: 1.0 })
+  perlinGUI.addInput(options.perlin, 'size', { min: 1.0, max: 3.0 })
+  perlinGUI.addInput(options.perlin, 'decay', { min: 0.0, max: 4.0 })
   perlinGUI.addInput(options.perlin, 'waves', { min: 0.0, max: 20.0 })
-  perlinGUI.addInput(options.perlin, 'complex', { min: 0.1, max: 1.0 })
+  perlinGUI.addInput(options.perlin, 'complex', { min: 0.1, max: 2.0 })
   perlinGUI.addInput(options.perlin, 'displace', { min: 0.1, max: 2.5 })
 
   const colorGUI = pane.addFolder({
