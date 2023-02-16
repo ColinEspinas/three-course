@@ -6,11 +6,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { Pane } from 'tweakpane'
 import randomWords from 'random-words'
 
+import { randomRange, randomRangeExcept } from '../utils'
 import { usePresets } from './presets'
 
 import fragmentShader from './shaders/blob.frag'
 import vertexShader from './shaders/blob.vert'
-import { randomRange, randomRangeExcept } from '../utils'
 
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
@@ -158,23 +158,23 @@ const onWindowResize = () => {
 const createWorld = () => {
   _width = window.innerWidth
   _height = window.innerHeight
-  // ---
+
   scene = new THREE.Scene()
   scene.background = new THREE.Color(0x292733)
-  // ---
+
   camera = new THREE.PerspectiveCamera(35, _width / _height, 1, 1000)
   camera.position.set(0, 0, 30)
-  // ---
+
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
   renderer.setSize(_width, _height)
   renderer.shadowMap.enabled = true
-  // ---
+
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
   controls.maxDistance = 100
-  // ---
+
   document.body.appendChild(renderer.domElement)
-  // ---
+
   window.addEventListener('resize', onWindowResize, false)
 }
 
@@ -205,10 +205,8 @@ const createBackgroundShapes = (amount: number) => {
     const randomGeometry = randomRange(0, 2)
     const randomSize = randomRange(1, 4)
     let geometry: any = new THREE.BoxGeometry(randomSize, randomSize, randomSize)
-    // sphere background
-    if (randomGeometry < 1) {
-      geometry = new THREE.SphereGeometry(randomSize, 32 * randomSize, 32 * randomSize)
-    }
+    if (randomGeometry < 1) geometry = new THREE.SphereGeometry(randomSize, 32 * randomSize, 32 * randomSize)
+
     const material = new THREE.MeshPhongMaterial({
       color: 0x464356,
       fog: true,
@@ -218,12 +216,10 @@ const createBackgroundShapes = (amount: number) => {
     const exceptPositions = Array(20)
       .fill(0)
       .map((_, index) => index - 10)
-
     mesh.position.x = randomRangeExcept(-100, 100, exceptPositions)
     mesh.position.y = randomRangeExcept(-100, 100, exceptPositions)
     mesh.position.z = randomRangeExcept(-100, 100, exceptPositions)
 
-    mesh.rotation.y += 0.01
     backgroundGroup.add(mesh)
   }
   scene.add(backgroundGroup, ambientLight)
@@ -344,8 +340,4 @@ const animate = () => {
   renderer.render(scene, camera)
 }
 
-createWorld()
-createGUI()
-createPrimitive()
-createBackgroundShapes(200)
-animate()
+export { createWorld, createPrimitive, createGUI, createBackgroundShapes, animate }
